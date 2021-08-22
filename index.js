@@ -9,8 +9,13 @@ app.use(cors());
 app.use(express.json());
 
 // ROUTES
-app.post("/todos", async(req, res) => {
+app.post("/posts", async(req, res) => {
     try {
+        const {description} = req.body; 
+        const newPost = await pool.query(
+            "INSERT INTO post (description) VALUES($1) RETURNING * ",
+            [description]
+        );
         console.log(req.body);
     } catch (err) {
         console.error(err.message);
