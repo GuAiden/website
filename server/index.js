@@ -27,7 +27,6 @@ app.post("/posts", async(req, res) => {
 });
 
 // Get all posts
-
 app.get("/posts", async(req, res) => {
     try {
         const allPosts = await pool.query("SELECT * FROM post");
@@ -48,6 +47,28 @@ app.get("/posts/:id", async(req, res) => {
     }
 }); 
 
+// Update a post by id
+app.put("/posts/:id", async(req, res) => {
+    try {
+        const {id} = req.params; 
+        const {description} = req.body; 
+        const updatePost = await pool.query("UPDATE post SET description = $1 WHERE post_id = $2", [description, id]);
+        res.json("Post was updated!");
+    } catch (err) {
+        console.error(err.message); 
+    }
+}); 
+
+// Delete a post by id
+app.delete("/posts/:id", async(req, res) => {
+    try {
+        const {id} = req.params; 
+        const deletePost = await pool.query("DELETE FROM post where post_id = $1", [id]); 
+        res.json("Post was deleted!");
+    } catch (err) {
+        console.error(err.message); 
+    }
+}); 
 
 
 app.listen(5000, () => {
