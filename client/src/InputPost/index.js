@@ -34,10 +34,6 @@ class InputForm extends Component {
         })
     }
 
-    submitPost = () => {
-
-    }
-
     render() {
         return (
             <form>
