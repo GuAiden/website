@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Fragment} from "react"
+import EditPost from "../EditPosts"
 
 const ListPosts = () => {
 
@@ -6,13 +7,28 @@ const ListPosts = () => {
     const [posts, setPosts] = useState([]);
 
     const getPosts = async () => {
-        const response = await fetch("http://localhost:5000/posts")
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch("http://localhost:5000/posts/")
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const posts = await response.json()
+            setPosts(posts)
+            return posts; 
+        } catch (err) {
+            console.error(err.message);
         }
-        const posts = await response.json()
-        setPosts(posts)
-        return posts; 
+    }
+
+    const deletePost = async (postId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/posts/${postId}`, {
+                method:"DELETE"
+            })
+            console.log(response)
+        } catch (err) {
+            console.error(err.message)
+        }
     }
 
     useEffect(() => {
@@ -36,8 +52,14 @@ const ListPosts = () => {
                         {posts.map((post) => (
                             <tr>
                                 <td>{post.description}</td>
-                                <td>Edit</td>
-                                <td>Delete</td>
+                                <td>
+                                    <EditPost post={post}/>
+                                </td>
+                                <td>
+                                    <button onClick={() => deletePost(post.post_id)} class="btn btn-danger"> 
+                                    Delete
+                                    </button>
+                                </td>
                             </tr>
                         ))} 
                     </tbody>
